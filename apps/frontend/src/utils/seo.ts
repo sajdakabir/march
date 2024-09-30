@@ -1,6 +1,6 @@
 import { type Metadata } from "next"
 
-export const BASE_URL = "https://march-nine.vercel.app" // Don't include slash at the end
+export const BASE_URL = "https://test.march.cat" // Don't include slash at the end
 
 interface MetadataArgs {
   path: string
