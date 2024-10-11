@@ -1,28 +1,21 @@
 "use client"
 
+import { Icon } from "@iconify-icon/react"
+
 import useGoogleCalendarLogin from "@/src/hooks/useCalendar"
-import { GoogleColored } from "@/src/lib/icons/GoogleColored"
 
 const CalendarAuth = (): JSX.Element => {
+  const handleConnect = useGoogleCalendarLogin("/stack")
+
   return (
-    <button className="flex w-96 items-center justify-center gap-x-6 rounded-2xl bg-transparent p-3 font-semibold text-gray-color hover:text-gray-100">
-      <GoogleColored />
-      Authorize with Google
+    <button
+      onClick={handleConnect}
+      className="hover-text flex w-fit items-center justify-center gap-2 bg-transparent p-1 font-semibold text-secondary-foreground"
+    >
+      <Icon icon="flat-color-icons:google" className="text-[20px]" />
+      <span className="pr-1">authorize with google</span>
     </button>
   )
 }
 
 export default CalendarAuth
-
-export const ConnectCalendarBtn = (): JSX.Element => {
-  const handleConnect = useGoogleCalendarLogin()
-
-  return (
-    <button
-      onClick={handleConnect}
-      className="rounded-md border border-gray-color p-1 text-sm hover:text-gray-100"
-    >
-      Connect
-    </button>
-  )
-}

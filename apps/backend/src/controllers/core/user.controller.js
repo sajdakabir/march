@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { getUserOverdueItems, getUserItemsByDate, getUserItems, moveItemtoDate, getUserTodayItems } from "../../services/lib/item.service.js";
+import { getUserOverdueItems, getUserItemsByDate, getUserItems, moveItemtoDate, getUserTodayItems, getAllitems } from "../../services/lib/item.service.js";
 import { updateUser } from "../../services/core/user.service.js";
 
 const { ValidationError } = Joi;
@@ -79,6 +79,23 @@ const getUserItemsController = async (req, res, next) => {
         next(err);
     }
 };
+const getAllitemsController = async (req, res, next) => {
+    try {
+        const me = req.user._id;
+        const items = await getAllitems(me);
+
+        // const IntegratedAppIssues = await getIntegration(me);
+        // res.json({
+        //     items
+        // });
+        res.status(200).json({
+            statusCode: 200,
+            response: items
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
 const getUserTodayItemsController = async (req, res, next) => {
     try {
@@ -99,10 +116,7 @@ const getUserOverdueItemsController = async (req, res, next) => {
         const me = req.user.id;
         const items = await getUserOverdueItems(me);
         res.json({
-            status: 200,
-            response: {
-                items
-            }
+            items
         });
     } catch (err) {
         next(err);
@@ -115,10 +129,7 @@ const getUserItemsByDateControlle = async (req, res, next) => {
         const { date } = req.params;
         const items = await getUserItemsByDate(me, date);
         res.json({
-            status: 200,
-            response: {
-                items
-            }
+            items
         });
     } catch (err) {
         next(err);
@@ -130,10 +141,7 @@ const moveItemtoDateController = async (req, res, next) => {
         const { id, dueDate } = req.body;
         const items = await moveItemtoDate(dueDate, id);
         res.json({
-            status: 200,
-            response: {
-                items
-            }
+            items
         });
     } catch (err) {
         next(err);
@@ -147,5 +155,6 @@ export {
     getUserTodayItemsController,
     getUserOverdueItemsController,
     getUserItemsByDateControlle,
-    moveItemtoDateController
+    moveItemtoDateController,
+    getAllitemsController
 }

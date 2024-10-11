@@ -1,6 +1,7 @@
 "use client"
 import { ChevronDown, ChevronRight } from "lucide-react"
 
+import useGoogleCalendarLogin from "@/src/hooks/useCalendar"
 import { useUserInfo } from "@/src/hooks/useUserInfo"
 import { Cal } from "@/src/lib/icons/Calendar"
 import { GithubDark } from "@/src/lib/icons/Github"
@@ -40,6 +41,7 @@ const integrations = [
 
 export const IntegrationList = (): JSX.Element => {
   const user = useUserInfo()
+  const handleLogin = useGoogleCalendarLogin("/profile")
 
   return (
     <div className=" space-y-4">
@@ -70,7 +72,12 @@ export const IntegrationList = (): JSX.Element => {
                 <ChevronDown size={13} />
               </button>
             ) : (
-              <button className="flex items-center text-sm">
+              <button
+                onClick={
+                  integration.key == "googleCalendar" ? handleLogin : () => {}
+                }
+                className="flex items-center text-sm"
+              >
                 Connect
                 <ChevronRight size={13} />
               </button>

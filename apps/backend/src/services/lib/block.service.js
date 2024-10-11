@@ -6,9 +6,8 @@ const createBlock = async (user, blockData) => {
     let block;
 
     switch (type) {
-    case 'notes': {
+    case 'note': {
         const note = await createNote(user, {});
-        console.log("sajda: ", note._id);
         block = new Block({
             name: "Note",
             user,
@@ -26,7 +25,7 @@ const createBlock = async (user, blockData) => {
     }
     default:
         block = new Block({
-            name: type.capitalize(),
+            name: blockData.name ? blockData.name : type,
             user,
             data: { ...blockData.data }
         });
@@ -47,7 +46,7 @@ const getBlocks = async (user) => {
 };
 
 const deleteBlock = async (id) => {
-    const block = await Block.findOneAndDelete({ uuid: id });
+    const block = await Block.findOneAndDelete({ _id: id });
 
     if (!block) {
         throw new Error('Block not found');
@@ -56,9 +55,12 @@ const deleteBlock = async (id) => {
 };
 
 const getBlock = async (user, id) => {
-    const block = await Block.find({
-        uuid: id,
+    const block = await Block.findOne({
+        _id: id,
         user
+    }).populate({
+        path: 'data.item',
+        model: 'Item'
     })
     if (!block) {
         throw new Error('Block not found');
@@ -68,7 +70,7 @@ const getBlock = async (user, id) => {
 
 const updateBlock = async (id, updateData) => {
     const updatedBlock = await Block.findOneAndUpdate({
-        uuid: id
+        _id: id
     },
     { $set: updateData },
     { new: true }

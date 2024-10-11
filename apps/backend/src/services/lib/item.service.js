@@ -4,8 +4,20 @@ import moment from 'moment-timezone';
 const getUserItems = async (me) => {
     const items = await Item.find({
         user: me,
-        status: { $ne: "done" },
+        isCompleted: false,
         isArchived: false,
+        isDeleted: false,
+        spaces: { $exists: true, $eq: [] },
+        status: { $ne: "archive" }
+    })
+        .sort({ createdAt: -1 });
+
+    return items;
+}
+
+const getAllitems = async (me) => {
+    const items = await Item.find({
+        user: me,
         isDeleted: false
     })
         .sort({ createdAt: -1 });
@@ -28,7 +40,7 @@ const getUserOverdueItems = async (me) => {
     const startOfDay = moment().startOf('day');
     const items = await Item.find({
         user: me,
-        dueDate: { $lt: startOfDay }, // Due date is before start of today (without time component)
+        dueDate: { $lt: startOfDay },
         isCompleted: false,
         isArchived: false,
         isDeleted: false
@@ -152,7 +164,7 @@ const getItems = async (user, filters, sortOptions) => {
 
 const getItem = async (user, id) => {
     const item = await Item.find({
-        uuid: id,
+        _id: id,
         user,
         isArchived: false,
         isDeleted: false
@@ -163,7 +175,7 @@ const getItem = async (user, id) => {
 
 const updateItem = async (id, updateData) => {
     const updatedItem = await Item.findOneAndUpdate({
-        uuid: id
+        _id: id
     },
     { $set: updateData },
     { new: true }
@@ -184,6 +196,24 @@ const moveItemtoDate = async (date, id) => {
     return item;
 };
 
+const getItemFilterByLabel = async (labelId, userId) => {
+    const items = await Item.find({
+        labels: { $in: [labelId] },
+        user: userId
+    })
+
+    return items;
+};
+
+const searchItemsByTitle = async (title) => {
+    const items = await Item.find({
+        title: { $regex: title, $options: 'i' },
+        isDeleted: false
+    }).exec();
+
+    return items;
+};
+
 export {
     getUserItems,
     createItem,
@@ -193,5 +223,8 @@ export {
     getUserOverdueItems,
     getUserItemsByDate,
     moveItemtoDate,
-    getUserTodayItems
+    getUserTodayItems,
+    getAllitems,
+    getItemFilterByLabel,
+    searchItemsByTitle
 }
