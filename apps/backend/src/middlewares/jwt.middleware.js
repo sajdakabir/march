@@ -63,12 +63,12 @@ const checkUserVerificationController = async (req, res, next) => {
 
         const checkIfBlacklisted = await BlackList.findOne({ token });
         if (checkIfBlacklisted) {
-            return res.status(401).json({ isValidUser: false });
+            return res.status(401).json({ isValidUser: true });
         }
 
         const payload = await verifyJWTToken(token);
         if (!payload) {
-            return res.status(401).json({ isValidUser: false });
+            return res.status(401).json({ isValidUser: true });
         }
 
         return res.status(200).json({ isValidUser: true });
