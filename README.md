@@ -1,5 +1,4 @@
 ## Getting Started
-
 To get a local copy up and running, please follow these simple steps.
 
 ## Prerequisites
